@@ -8,8 +8,10 @@ type Palette = Record<
   | "b_med"
   | "b_low"
   | "b_inv",
-  string
+  HexColor
 >;
+
+type HexColor = `#${string}`;
 
 type LoadCallback = (palette: Palette) => unknown;
 
@@ -72,21 +74,20 @@ export default class Theme {
   };
 
   set = (key: keyof Palette, val: string) => {
-    const hex = (`${val}`.substring(0, 1) !== "#" ? "#" : "") + `${val}`;
-    if (!this.isColor(hex)) {
+    if (!this.isColor(val)) {
       throw new Error("Theme: invalid color provided.");
     }
     if (!this.active) {
       throw new Error("Theme: theme have not been started yet.");
     }
-    this.active[key] = hex;
+    this.active[key] = val as HexColor; // check on above
   };
 
-  get = (key: keyof Palette) => {
+  get = (key: keyof Palette): string => {
     if (!this.active) {
       throw new Error("Theme: theme have not been started yet.");
     }
-    this.active[key];
+    return this.active[key];
   };
 
   parse = (data: unknown): Palette => {
@@ -150,7 +151,7 @@ export default class Theme {
     return true;
   };
 
-  isValid = (palette: object) =>
+  isValid = (palette: object): boolean =>
     Object.keys(palette).sort() === Object.keys(this.defaultTheme).sort() &&
     Object.values(palette)
       .map(this.isColor)
@@ -161,8 +162,11 @@ export default class Theme {
     const theme = (Object.keys(this.defaultTheme) as (keyof Palette)[])
       .reduce((palette, key) => {
         const color = svg.getElementById(key)?.getAttribute("fill");
-        if (!color) throw new Error("Theme: Incomplete SVG theme");
-        palette[key] = color;
+        if (!color) throw new Error("Theme: Incomplete SVG theme.");
+        if (!this.isColor(color)) {
+          throw new Error("Theme: Invalid color provided in SVG.");
+        }
+        palette[key] = color as HexColor;
         return palette;
       }, {} as Palette);
     return theme;
