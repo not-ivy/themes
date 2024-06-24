@@ -91,7 +91,6 @@ export default class Theme {
   };
 
   parse = (data: unknown): Palette => {
-    if (!data) throw new Error("Te");
     switch (typeof data) {
       case "string":
         if (this.isJson(data)) return this.parse(JSON.parse(data));
@@ -151,7 +150,9 @@ export default class Theme {
     return true;
   };
 
-  isValid = (palette: object): boolean =>
+  isValid = (palette?: object | null): boolean =>
+    palette !== undefined &&
+    palette !== null &&
     Object.keys(palette).sort() === Object.keys(this.defaultTheme).sort() &&
     Object.values(palette)
       .map(this.isColor)
