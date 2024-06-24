@@ -1,3 +1,5 @@
+/// <reference lib="DOM" />
+
 type Palette = Record<
   | "background"
   | "f_high"
