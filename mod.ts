@@ -74,8 +74,7 @@ export default class Theme {
   set = (key: keyof Palette, val: string) => {
     const hex = (`${val}`.substring(0, 1) !== "#" ? "#" : "") + `${val}`;
     if (!this.isColor(hex)) {
-      console.warn("Theme", `${hex} is not a valid color.`);
-      return;
+      throw new Error("Theme: invalid color provided.");
     }
     if (!this.active) {
       throw new Error("Theme: theme have not been started yet.");
@@ -87,16 +86,21 @@ export default class Theme {
     if (!this.active) {
       throw new Error("Theme: theme have not been started yet.");
     }
-    return this.active[key];
+    this.active[key];
   };
 
-  parse = (data: Palette | string): Palette => {
-    if (typeof data === "object" && this.isValid(data)) return data;
-    if (typeof data === "string" && this.isJson(data)) return JSON.parse(data);
-    if (typeof data === "string" && this.isHtml(data)) {
-      return this.extract(data);
+  parse = (data: unknown): Palette => {
+    if (!data) throw new Error("Te");
+    switch (typeof data) {
+      case "string":
+        if (this.isJson(data)) return this.parse(JSON.parse(data));
+        if (this.isHtml(data)) return this.extract(data);
+        break;
+      case "object":
+        if (this.isValid(data)) return data as Palette;
+        throw new Error("Theme: invalid palette provided.");
     }
-    throw new Error("Theme: Unrecognized data format");
+    throw new Error("Theme: Unrecognized data format.");
   };
 
   drag = (e: DragEvent) => {
@@ -146,8 +150,9 @@ export default class Theme {
     return true;
   };
 
-  isValid = (json: Palette) =>
-    Object.values(json)
+  isValid = (palette: object) =>
+    Object.keys(palette).sort() === Object.keys(this.defaultTheme).sort() &&
+    Object.values(palette)
       .map(this.isColor)
       .every((el) => el === true);
 
