@@ -17,26 +17,32 @@ type HexColor = `#${string}`;
 
 type LoadCallback = (palette: Palette) => unknown;
 
+type Options = Partial<{
+  host: Document;
+  onload: LoadCallback;
+  defaultTheme: Palette;
+}>;
+
 export default class Theme {
   readonly defaultTheme: Palette;
 
-  #el = document.createElement("style");
+  #el: HTMLElement;
 
   active?: Palette | undefined;
-  host: HTMLElement;
+  host: Document;
 
   onLoad?: LoadCallback | undefined;
 
   install = () => {
     this.host.addEventListener("dragover", this.drag);
     this.host.addEventListener("drop", this.drop);
-    this.host.appendChild(this.#el);
+    this.host.body.appendChild(this.#el);
   };
 
   start = () => {
     console.log("Theme", "Starting..");
     try {
-      console.log("Theme", "Loading theme in localStorage..");
+      console.log("Theme", "Loading theme in localStorage...");
       this.load(localStorage["theme"]);
     } catch {
       console.log("Theme", "Loading failed, falling back to default...");
@@ -46,7 +52,7 @@ export default class Theme {
 
   open = () => {
     console.log("Theme", "Open theme..");
-    const input = document.createElement("input");
+    const input = this.host.createElement("input");
     input.type = "file";
     input.onchange = (e) => {
       if (!e.target) return;
@@ -58,9 +64,6 @@ export default class Theme {
 
   load = (data: Palette | string) => {
     const theme = this.parse(data);
-    if (this.isValid(theme)) {
-      throw new Error("Theme: Missing values");
-    }
     this.#el.innerHTML = `:root {${
       Object.entries(theme).map(([key, val]) => `--${key}: ${val};`)
     }};`;
@@ -152,14 +155,22 @@ export default class Theme {
     return true;
   };
 
+  /**
+   * @param palette
+   * @returns true if provided <palette> is not undefined or null, contains all colors, and all colors are valid hex.
+   */
   isValid = (palette?: object | null): boolean =>
     palette !== undefined &&
     palette !== null &&
-    Object.keys(palette).sort() === Object.keys(this.defaultTheme).sort() &&
-    Object.values(palette)
-      .map(this.isColor)
-      .every((el) => el === true);
+    Object.keys(palette).sort().every((el, i) =>
+      el === Object.keys(this.defaultTheme).sort()[i] // probably not a very efficient check
+    ) &&
+    Object.values(palette).map(this.isColor).every((el) => el === true);
 
+  /**
+   * @param xml a svg document that should have
+   * @returns
+   */
   extract = (xml: string): Palette => {
     const svg = new DOMParser().parseFromString(xml, "text/xml");
     const theme = (Object.keys(this.defaultTheme) as (keyof Palette)[])
@@ -175,15 +186,11 @@ export default class Theme {
     return theme;
   };
 
-  constructor(opts: {
-    host?: HTMLElement;
-    onload?: LoadCallback;
-    defaultTheme?: Palette;
-  }) {
-    if (opts.defaultTheme && !this.isValid(opts.defaultTheme)) {
+  constructor(opts?: Options) {
+    if (opts?.defaultTheme && !this.isValid(opts?.defaultTheme)) {
       throw new Error("Theme: invalid defaultTheme supplied.");
     }
-    this.defaultTheme = opts.defaultTheme || {
+    this.defaultTheme = opts?.defaultTheme || {
       background: "#eeeeee",
       f_high: "#0a0a0a",
       f_med: "#4a4a4a",
@@ -194,7 +201,9 @@ export default class Theme {
       b_low: "#ffffff",
       b_inv: "#ffb545",
     };
-    this.host = opts.host || document.body;
-    this.onLoad = opts.onload;
+    this.host = opts?.host || globalThis.document;
+    this.onLoad = opts?.onload;
+    this.#el = this.host.createElement("style");
+    this.#el.id = "theme-framework";
   }
 }
