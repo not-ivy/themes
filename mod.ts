@@ -21,6 +21,7 @@ type Options = Partial<{
   host: Document;
   onload: LoadCallback;
   defaultTheme: Palette;
+  parser: DOMParser;
 }>;
 
 export default class Theme {
@@ -30,6 +31,7 @@ export default class Theme {
 
   active?: Palette | undefined;
   host: Document;
+  #parser: DOMParser;
 
   onLoad?: LoadCallback | undefined;
 
@@ -148,7 +150,7 @@ export default class Theme {
 
   isHtml = (text: string): boolean => {
     try {
-      new DOMParser().parseFromString(text, "text/xml");
+      this.#parser.parseFromString(text, "text/xml");
     } catch {
       return false;
     }
@@ -205,5 +207,6 @@ export default class Theme {
     this.onLoad = opts?.onload;
     this.#el = this.host.createElement("style");
     this.#el.id = "theme-framework";
+    this.#parser = opts?.parser || new globalThis.DOMParser();
   }
 }
