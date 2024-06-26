@@ -16,6 +16,7 @@ Deno.test("main", async (t) => {
     theme = new Theme({
       host: document as unknown as Document,
       parser: new DOMParser() as unknown as globalThis.DOMParser,
+      quiet: true,
     });
   });
 
@@ -31,6 +32,18 @@ Deno.test("main", async (t) => {
       document.body.getElementById("theme-framework")?.innerHTML,
       ":root {--background: #eeeeee;,--f_high: #0a0a0a;,--f_med: #4a4a4a;,--f_low: #6a6a6a;,--f_inv: #111111;,--b_high: #a1a1a1;,--b_med: #c1c1c1;,--b_low: #ffffff;,--b_inv: #ffb545;};",
     );
+  });
+
+  await t.step("get", () => {
+    Object.keys(theme.defaultTheme).forEach((key) => {
+      const k = key as keyof typeof theme["defaultTheme"];
+      assertEquals(theme.get(k), theme.defaultTheme[k]);
+    });
+  });
+
+  await t.step("set", () => {
+    theme.set("background", "#000000");
+    assertEquals(theme.get("background"), "#000000");
   });
 });
 
@@ -52,6 +65,10 @@ Deno.test("helpers", async (t) => {
   //       `<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" version="1.1"></svg>`,
   //     ),
   //   );
-  //   assertFalse(theme.isHtml("asdasda"));
   // });
+
+  await t.step("isValid", () => {
+    assertFalse(theme.isValid({}));
+    assert(theme.isValid(theme.defaultTheme));
+  });
 });
