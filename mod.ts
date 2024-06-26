@@ -101,7 +101,7 @@ export default class Theme {
     switch (typeof data) {
       case "string":
         if (this.isJson(data)) return this.parse(JSON.parse(data));
-        if (this.isHtml(data)) return this.extract(data);
+        if (this.isSvg(data)) return this.extract(data);
         break;
       case "object":
         if (this.isValid(data)) return data as Palette;
@@ -148,10 +148,11 @@ export default class Theme {
     return true;
   };
 
-  isHtml = (text: string): boolean => {
+  isSvg = (text: string): boolean => {
     try {
-      this.#parser.parseFromString(text, "text/xml");
-    } catch {
+      this.#parser.parseFromString(text, "image/svg+xml");
+    } catch (e) {
+      console.log(e);
       return false;
     }
     return true;
@@ -174,7 +175,7 @@ export default class Theme {
    * @returns
    */
   extract = (xml: string): Palette => {
-    const svg = this.#parser.parseFromString(xml, "text/xml");
+    const svg = this.#parser.parseFromString(xml, "image/svg+xml");
     const theme = (Object.keys(this.defaultTheme) as (keyof Palette)[])
       .reduce((palette, key) => {
         const color = svg.getElementById(key)?.getAttribute("fill");
