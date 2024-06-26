@@ -22,6 +22,7 @@ type Options = Partial<{
   onload: LoadCallback;
   defaultTheme: Palette;
   parser: DOMParser;
+  quiet: boolean;
 }>;
 
 export default class Theme {
@@ -32,6 +33,7 @@ export default class Theme {
   active?: Palette | undefined;
   host: Document;
   #parser: DOMParser;
+  readonly #quiet: boolean;
 
   onLoad?: LoadCallback | undefined;
 
@@ -42,23 +44,23 @@ export default class Theme {
   };
 
   start = () => {
-    console.log("Theme", "Starting..");
+    this.#log("Starting..");
     try {
-      console.log("Theme", "Loading theme in localStorage...");
+      this.#log("Loading theme in localStorage...");
       this.load(localStorage["theme"]);
     } catch {
-      console.log("Theme", "Loading failed, falling back to default...");
+      this.#log("Loading failed, falling back to default...");
       this.load(this.defaultTheme);
     }
   };
 
   open = () => {
-    console.log("Theme", "Open theme..");
+    this.#log("Open theme..");
     const input = this.host.createElement("input");
     input.type = "file";
     input.onchange = (e) => {
       if (!e.target) return;
-      console.log(e.target);
+      this.#log(e.target);
       // this.read(e.target.files[0], this.load);
     };
     input.click();
@@ -69,10 +71,10 @@ export default class Theme {
     this.#el.innerHTML = `:root {${
       Object.entries(theme).map(([key, val]) => `--${key}: ${val};`)
     }};`;
-    console.log("Theme", "Loaded theme.");
+    this.#log("Loaded theme.");
     localStorage.setItem("theme", JSON.stringify(theme));
     this.active = theme;
-    console.log("Theme", "Saved theme.");
+    this.#log("Saved theme.");
     if (this.onLoad) this.onLoad(theme);
   };
 
@@ -151,8 +153,7 @@ export default class Theme {
   isSvg = (text: string): boolean => {
     try {
       this.#parser.parseFromString(text, "image/svg+xml");
-    } catch (e) {
-      console.log(e);
+    } catch {
       return false;
     }
     return true;
@@ -189,6 +190,10 @@ export default class Theme {
     return theme;
   };
 
+  #log = (...data: unknown[]) => {
+    if (!this.#quiet) console.log("Theme:", ...data);
+  };
+
   constructor(opts?: Options) {
     if (opts?.defaultTheme && !this.isValid(opts?.defaultTheme)) {
       throw new Error("Theme: invalid defaultTheme supplied.");
@@ -209,5 +214,6 @@ export default class Theme {
     this.#el = this.host.createElement("style");
     this.#el.id = "theme-framework";
     this.#parser = opts?.parser || new globalThis.DOMParser();
+    this.#quiet = opts?.quiet || false;
   }
 }
