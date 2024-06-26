@@ -174,7 +174,7 @@ export default class Theme {
    * @returns
    */
   extract = (xml: string): Palette => {
-    const svg = new DOMParser().parseFromString(xml, "text/xml");
+    const svg = this.#parser.parseFromString(xml, "text/xml");
     const theme = (Object.keys(this.defaultTheme) as (keyof Palette)[])
       .reduce((palette, key) => {
         const color = svg.getElementById(key)?.getAttribute("fill");
