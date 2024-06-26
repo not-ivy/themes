@@ -166,6 +166,7 @@ export default class Theme {
   isValid = (palette?: object | null): boolean =>
     palette !== undefined &&
     palette !== null &&
+    Object.keys(palette).length > 0 &&
     Object.keys(palette).sort().every((el, i) =>
       el === Object.keys(this.defaultTheme).sort()[i] // probably not a very efficient check
     ) &&
