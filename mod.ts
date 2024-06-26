@@ -69,8 +69,8 @@ export default class Theme {
   load = (data: Palette | string) => {
     const theme = this.parse(data);
     this.#el.innerHTML = `:root {${
-      Object.entries(theme).map(([key, val]) => `--${key}: ${val};`)
-    }};`;
+      Object.entries(theme).map(([key, val]) => `--${key}: ${val};`).join(" ")
+    }}`;
     this.#log("Loaded theme.");
     localStorage.setItem("theme", JSON.stringify(theme));
     this.active = theme;
