@@ -15,5 +15,9 @@
   },
   "tasks": {
     "build": "rm -rf dist && mkdir dist && deno bundle mod.ts > dist/main.js"
+  },
+  "imports": {
+    "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@^0.1.47",
+    "@std/assert": "jsr:@std/assert@^0.226.0"
   }
 }
