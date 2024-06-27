@@ -1,6 +1,6 @@
 {
   "name": "@iv/themes",
-  "version": "0.0.1-alpha",
+  "version": "1.0.0",
   "exports": "./mod.ts",
   "compilerOptions": {
     "strict": true,
