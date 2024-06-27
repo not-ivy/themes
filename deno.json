@@ -21,7 +21,8 @@
   },
   "tasks": {
     "build": "rm -rf dist && mkdir dist && deno bundle mod.ts > dist/main.js",
-    "test": "rm -rf coverage && deno test --allow-read --coverage=coverage && deno coverage coverage --html"
+    "test": "rm -rf coverage && deno test --allow-read --coverage=coverage && deno coverage coverage --html",
+    "site": "deno run -A npm:sirv-cli/sirv site --dev"
   },
   "imports": {
     "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@^0.1.47",
