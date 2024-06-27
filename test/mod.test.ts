@@ -1,5 +1,3 @@
-/// <reference lib="deno.ns" />
-
 import { DOMParser } from "jsr:@b-fuze/deno-dom";
 import Theme from "../mod.ts";
 import { assert, assertEquals, assertExists, assertFalse } from "@std/assert";
