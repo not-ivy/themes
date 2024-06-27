@@ -91,9 +91,14 @@
       }
     }
   },
+  "redirects": {
+    "https://esm.sh/jsr/@sondr3/a11y-color-contrast": "https://esm.sh/jsr/@sondr3/a11y-color-contrast@0.2.0"
+  },
   "remote": {
     "https://esm.sh/jsr/@iv/themes@0.0.1-alpha": "c59a7719af7082099f7ff1439cddecc30dceb277c637193f56abd8a7dca0eddf",
-    "https://esm.sh/v135/@jsr/iv__themes@0.0.1-alpha/denonext/iv__themes.mjs": "e2e64ed7a96f492f4151a9793fe1983218b384d553cd83100295347ce752c82e"
+    "https://esm.sh/jsr/@sondr3/a11y-color-contrast@0.2.0": "229191c162d3e4fc9e068817eac49830ee0b7781e3d35279dabef586ef813da5",
+    "https://esm.sh/v135/@jsr/iv__themes@0.0.1-alpha/denonext/iv__themes.mjs": "e2e64ed7a96f492f4151a9793fe1983218b384d553cd83100295347ce752c82e",
+    "https://esm.sh/v135/@jsr/sondr3__a11y-color-contrast@0.2.0/denonext/sondr3__a11y-color-contrast.mjs": "69168a7b16bfde9330801b1b3484134e44702b565c0b54c7d8e2552efcca87b7"
   },
   "workspace": {
     "dependencies": [
