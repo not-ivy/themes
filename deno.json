@@ -1,4 +1,7 @@
 {
+  "name": "@iv/themes",
+  "version": "0.0.1-alpha",
+  "exports": "./mod.ts",
   "compilerOptions": {
     "strict": true,
     "allowUnusedLabels": false,
@@ -11,10 +14,15 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "lib": [
+      "DOM",
+      "deno.ns"
+    ]
   },
   "tasks": {
-    "build": "rm -rf dist && mkdir dist && deno bundle mod.ts > dist/main.js"
+    "build": "rm -rf dist && mkdir dist && deno bundle mod.ts > dist/main.js",
+    "test": "rm -rf coverage && deno test --allow-read --coverage=coverage && deno coverage coverage --html"
   },
   "imports": {
     "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@^0.1.47",

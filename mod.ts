@@ -1,5 +1,3 @@
-/// <reference lib="DOM" />
-
 type Palette = Record<
   | "background"
   | "f_high"
@@ -37,13 +35,13 @@ export default class Theme {
 
   onLoad?: LoadCallback | undefined;
 
-  install = () => {
+  install = (): void => {
     this.host.addEventListener("dragover", this.drag);
     this.host.addEventListener("drop", this.drop);
     this.host.body.appendChild(this.#el);
   };
 
-  start = () => {
+  start = (): void => {
     this.#log("Starting..");
     try {
       this.#log("Loading theme in localStorage...");
@@ -54,7 +52,7 @@ export default class Theme {
     }
   };
 
-  open = () => {
+  open = (): void => {
     this.#log("Open theme..");
     const input = this.host.createElement("input");
     input.type = "file";
@@ -66,7 +64,7 @@ export default class Theme {
     input.click();
   };
 
-  load = (data: Palette | string) => {
+  load = (data: Palette | string): void => {
     const theme = this.parse(data);
     this.#el.innerHTML = `:root {${
       Object.entries(theme).map(([key, val]) => `--${key}: ${val};`).join(" ")
@@ -78,11 +76,11 @@ export default class Theme {
     if (this.onLoad) this.onLoad(theme);
   };
 
-  reset = () => {
+  reset = (): void => {
     this.load(this.defaultTheme);
   };
 
-  set = (key: keyof Palette, val: string) => {
+  set = (key: keyof Palette, val: string): void => {
     if (!this.isColor(val)) {
       throw new Error("Theme: invalid color provided.");
     }
@@ -130,7 +128,7 @@ export default class Theme {
     e.stopPropagation();
   };
 
-  read = (file: File, callback: typeof this.load) => {
+  read = (file: File, callback: typeof this.load): void => {
     const reader = new FileReader();
     reader.onload = (event) => {
       if (typeof event.target?.result !== "string") return;
