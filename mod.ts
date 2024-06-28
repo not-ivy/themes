@@ -23,6 +23,16 @@ type Options = Partial<{
   quiet: boolean;
 }>;
 
+/**
+ * Fork of 100r's [theme framework]{@link https://github.com/hundredrabbits/Themes}, rewritten using ts + esm.
+ *
+ * Quick start:
+ * ```typescript
+ * const theme = new Theme();
+ * theme.install(); // see {@link install}
+ * theme.start(); // see {@link start}
+ * ```
+ */
 export default class Theme {
   readonly defaultTheme: Palette;
 
@@ -35,12 +45,20 @@ export default class Theme {
 
   onLoad?: LoadCallback | undefined;
 
+  /**
+   * Adds drag and drop listeners and appends the style element the to the {@link host}.
+   */
   install = (): void => {
     this.host.addEventListener("dragover", this.drag);
     this.host.addEventListener("drop", this.drop);
     this.host.body.appendChild(this.#el);
   };
 
+  /**
+   * Try to load an existing theme in `localStorage`, or load the [default theme]{@link defaultTheme}.
+   *
+   * @see {@link load}
+   */
   start = (): void => {
     this.#log("Starting..");
     try {
@@ -52,6 +70,11 @@ export default class Theme {
     }
   };
 
+  /**
+   * Opens a dialog for the user to choose the theme file to {@link load}.
+   *
+   * @deprecated current non-functional.
+   */
   open = (): void => {
     this.#log("Open theme..");
     const input = this.host.createElement("input");
@@ -64,6 +87,11 @@ export default class Theme {
     input.click();
   };
 
+  /**
+   * Parse and load the provided theme.
+   *
+   * @param data an object or a string containing valid `application/json` or `image/svg+xml`.
+   */
   load = (data: Palette | string): void => {
     const theme = this.parse(data);
     this.#el.innerHTML = `:root {${
@@ -76,10 +104,19 @@ export default class Theme {
     if (this.onLoad) this.onLoad(theme);
   };
 
+  /**
+   * Loads the default theme.
+   */
   reset = (): void => {
     this.load(this.defaultTheme);
   };
 
+  /**
+   * Sets a color by the key to the current [active theme]{@link active}.
+   *
+   * @param key the color key of the {@link Palette}
+   * @param val a hex formatted color string
+   */
   set = (key: keyof Palette, val: string): void => {
     if (!this.isColor(val)) {
       throw new Error("Theme: invalid color provided.");
@@ -90,6 +127,12 @@ export default class Theme {
     this.active[key] = val as HexColor; // check on above
   };
 
+  /**
+   * Gets a color by the key in the current [active palette]{@link active}.
+   *
+   * @param key color key in a {@link Palette}
+   * @returns a hex formatted string that represents the selected color
+   */
   get = (key: keyof Palette): string => {
     if (!this.active) {
       throw new Error("Theme: theme have not been started yet.");
@@ -97,6 +140,13 @@ export default class Theme {
     return this.active[key];
   };
 
+  /**
+   * Transforms the provided data into a parsed theme as an object.
+   *
+   * @param data an object or a string containing valid `application/json` or `image/svg+xml`
+   * @returns an object representing the provided theme
+   * @see {@link load}
+   */
   parse = (data: unknown): Palette => {
     switch (typeof data) {
       case "string":
@@ -158,8 +208,10 @@ export default class Theme {
   };
 
   /**
-   * @param palette
-   * @returns true if provided <palette> is not undefined or null, contains all colors, and all colors are valid hex.
+   * Checks if the provided object is a valid theme.
+   *
+   * @param palette an object containing possible valid {@link Palette}.
+   * @returns true if provided palette is not undefined or null, contains all colors, and all colors are valid hex.
    */
   isValid = (palette?: object | null): boolean =>
     palette !== undefined &&
@@ -171,7 +223,9 @@ export default class Theme {
     Object.values(palette).map(this.isColor).every((el) => el === true);
 
   /**
-   * @param xml a svg document that should have
+   * Transforms the provided xml into a valid {@link Palette} object.
+   *
+   * @param xml a string containing valid `image/svg+xml`.
    * @returns
    */
   extract = (xml: string): Palette => {
