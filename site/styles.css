@@ -9,6 +9,25 @@ body {
   display: grid;
   place-items: center;
 
+  &>div {
+    width: 15vw;
+    transition: opacity cubic-bezier(0, 0.55, 0.45, 1) 300ms;
+
+    &>h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: large;
+    }
+
+    &>#progress-bar {
+      width: 10%;
+      border-bottom: 2px var(--f_high) solid;
+      border-radius: 5px;
+
+      transition: width cubic-bezier(0, 0.55, 0.45, 1) 300ms;
+    }
+  }
+
   &>main {
     &>figure {
       width: 25vw;
