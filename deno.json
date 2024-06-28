@@ -16,7 +16,8 @@
     "noUnusedParameters": true,
     "verbatimModuleSyntax": true,
     "lib": [
-      "DOM"
+      "DOM",
+      "ESNext"
     ]
   },
   "tasks": {
