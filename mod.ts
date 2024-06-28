@@ -1,4 +1,4 @@
-type Palette = Record<
+export type Palette = Record<
   | "background"
   | "f_high"
   | "f_med"
@@ -11,11 +11,11 @@ type Palette = Record<
   HexColor
 >;
 
-type HexColor = `#${string}`;
+export type HexColor = `#${string}`;
 
-type LoadCallback = (palette: Palette) => unknown;
+export type LoadCallback = (palette: Palette) => unknown;
 
-type Options = Partial<{
+export type Options = Partial<{
   host: Document;
   onload: LoadCallback;
   defaultTheme: Palette;
@@ -24,7 +24,7 @@ type Options = Partial<{
 }>;
 
 /**
- * Fork of 100r's [theme framework]{@link https://github.com/hundredrabbits/Themes}, rewritten using ts + esm.
+ * Fork of 100r's {@link https://github.com/hundredrabbits/Themes|theme framework}, rewritten using ts + esm.
  *
  * Quick start:
  * ```typescript
@@ -55,7 +55,7 @@ export default class Theme {
   };
 
   /**
-   * Try to load an existing theme in `localStorage`, or load the [default theme]{@link defaultTheme}.
+   * Try to load an existing theme in `localStorage`, or load the {@link defaultTheme|default theme}.
    *
    * @see {@link load}
    */
@@ -112,10 +112,10 @@ export default class Theme {
   };
 
   /**
-   * Sets a color by the key to the current [active theme]{@link active}.
+   * Sets a color by the key to the current {@link active|active theme}.
    *
    * @param key the color key of the {@link Palette}
-   * @param val a hex formatted color string
+   * @param val a {@link HexColor} formatted color string
    */
   set = (key: keyof Palette, val: string): void => {
     if (!this.isColor(val)) {
@@ -128,10 +128,10 @@ export default class Theme {
   };
 
   /**
-   * Gets a color by the key in the current [active palette]{@link active}.
+   * Gets a color by the key in the current {@link active|active palette}.
    *
    * @param key color key in a {@link Palette}
-   * @returns a hex formatted string that represents the selected color
+   * @returns a {@link HexColor} formatted string that represents the selected color
    */
   get = (key: keyof Palette): string => {
     if (!this.active) {
@@ -211,7 +211,7 @@ export default class Theme {
    * Checks if the provided object is a valid theme.
    *
    * @param palette an object containing possible valid {@link Palette}.
-   * @returns true if provided palette is not undefined or null, contains all colors, and all colors are valid hex.
+   * @returns true if provided palette is not undefined or null, contains all colors, and all colors are valid {@link HexColor}.
    */
   isValid = (palette?: object | null): boolean =>
     palette !== undefined &&
