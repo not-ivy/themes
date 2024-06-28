@@ -11,13 +11,15 @@ original license that Hundredrabbits' framework was licensed under.
 
 ## Use
 
+### Importing
+
 This package is published on [jsr](https://jsr.io/@iv/themes). To use it, it is
 suggested to create an
 [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap).
 Currently, jsr [does not allow](https://github.com/jsr-io/jsr/issues/133)
 importing staight from the browser, so you should use a cdn instead.
 
-### Import Map
+#### Import Map
 
 ```html
 <script type="importmap">
@@ -40,7 +42,7 @@ import Theme from "jsr:@iv/themes";
 
 Or, you can also use a http import:
 
-### HTTP Import
+#### HTTP Import
 
 ```javascript
 import Theme from "https://esm.sh/jsr/@iv/themes@<current ver>";
@@ -51,3 +53,15 @@ in the badge above.
 
 **Note**: a browser that supports [es6-module](https://caniuse.com/es6-module)
 is required.
+
+### Quick Start
+
+```typescript
+const theme = new Theme();
+theme.install(); // installs a style element to provide variables
+theme.start(); // loads an existing theme from localStorage, or the default theme
+```
+
+To apply a new theme, find an existing theme
+[here](https://github.com/hundredrabbits/Themes/tree/master/themes), then drag
+and drop the svg file onto the web page.
